@@ -1,6 +1,10 @@
 <% provide(:title, "Home") %>
 
-<h1>StaticPages#home</h1>
+<h1>StaticPages#<%= yield(:title).downcase %></h1>
 <p>
-  To go to help press: <a href="/static_pages/help">this</a>.
+  To go to 'contact' press: <a href="/static_pages/contact">this</a>.
+  <br>
+  To go to 'help' press: <a href="/static_pages/help">this</a>.
+  <br>
+  To go to 'about' press: <a href="/static_pages/about">this</a>.
 </p>
