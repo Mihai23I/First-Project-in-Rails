@@ -3,6 +3,11 @@ require 'test_helper'
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   def setup; end
 
+  test "should get 'root'" do
+    get root_url
+    assert_response :success
+  end
+
   test "should get 'home'" do
     page_get 'home'
     assert_response :success
