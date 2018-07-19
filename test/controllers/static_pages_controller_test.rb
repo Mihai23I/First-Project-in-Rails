@@ -4,7 +4,7 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   def setup; end
 
   test "should get 'root'" do
-    get root_url
+    get root_path
     assert_response :success
   end
 
@@ -50,10 +50,10 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
 
   def page_get(page)
     operations = {}
-    operations['about'] = -> { get static_pages_about_url }
-    operations['help'] = -> { get static_pages_help_url }
-    operations['home'] = -> { get static_pages_home_url }
-    operations['contact'] = -> { get static_pages_contact_url }
+    operations['about'] = -> { get about_path }
+    operations['help'] = -> { get help_path }
+    operations['home'] = -> { get home_path }
+    operations['contact'] = -> { get contact_path }
     operations[page].call
   end
 end
