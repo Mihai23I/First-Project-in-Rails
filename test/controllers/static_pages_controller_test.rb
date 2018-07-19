@@ -15,4 +15,19 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get static_pages_about_url
     assert_response :success
   end
+
+  test "is home title right" do
+    get static_pages_home_url
+    assert_select 'title', 'Home'
+  end
+
+  test "is help title right" do
+    get static_pages_help_url
+    assert_select 'title', 'Help'
+  end
+
+  test "is about title right" do
+    get static_pages_about_url
+    assert_select 'title', 'About'
+  end
 end
