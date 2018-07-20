@@ -3,72 +3,82 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   def setup
     @user = User.new(name: 'Mihai', email: 'mihai@mail.com')
+    @name_length_max = 50
+    @name_length_min = 3
+    @email_max_length = 200
+    @email_min_length = 8
   end
 
   # Tests for User.name validation
 
-  def test_validation_name_smoke
+  test 'smoke test name should' do
     @user.name = 'Mihai'
     assert @user.valid?
   end
 
-  def test_validation_name_blank
+  test 'empty name should NOT' do
     @user.name = ''
     assert_not @user.valid?
   end
 
-  def test_validation_name_white_spaces
+  test 'name with white spaces should NOT' do
     @user.name = '   '
     assert_not @user.valid?
   end
 
-  def test_validation_name_only_numbers
+  test 'name with only numbers / special characters should NOT' do
     @user.name = '123'
     assert_not @user.valid?
   end
 
-  def test_validation_name_length_min
-    @user.name = 'a' * 3
+  test 'names length min' do
+    @user.name = 'a' * @name_length_min
     assert @user.valid?
-    @user.name = 'a' * 2
+    @user.name = 'a' * (@name_length_min - 1)
     assert_not @user.valid?
   end
 
-  def test_validation_name_length_max
-    @user.name = 'a' * 50
+  test 'names length max' do
+    @user.name = 'a' * @name_length_max
     assert @user.valid?
-    @user.name = 'a' * 51
+    @user.name = 'a' * (@name_length_max + 1)
     assert_not @user.valid?
   end
 
   # Tests for User.email validation
 
-  def test_validation_email_should_pass
+  test 'smoke test email' do
     @user.email = 'mihai@gmail.com'
     assert @user.valid?
   end
 
-  def test_validation_email_blank
+  test 'empty email should NOT' do
     @user.email = ''
     assert_not @user.valid?
   end
 
-  def test_validation_email_white_spaces
-    @user.email = '   '
+  test 'only white spaces email should NOT' do
+    @user.email = '    '
     assert_not @user.valid?
   end
 
-  def test_validation_email_length_min
-    @user.email = 'a' * 3 + '@a.aa'
+  test 'minimum length email' do
+    email_domain_min = '@a.aa'
+    email_length_min_without_domain = @email_min_length - email_domain_min.length
+    # TODO: better name for variable
+    @user.email = 'a' * email_length_min_without_domain + email_domain_min
     assert @user.valid?
-    @user.email = 'a' * 2 + '@a.aa'
+    @user.email = 'a' * (email_length_min_without_domain - 1) + email_domain_min
     assert_not @user.valid?
   end
 
   def test_validation_email_length_max
-    @user.email = 'a' * 188 + '@example.com'
+    email_domain = '@a.aa'
+    email_length_max_without_domain = @email_max_length - email_domain.length
+    # TODO: better name for variable
+    @user.email = 'a' * email_length_max_without_domain + email_domain
     assert @user.valid?
-    @user.email = 'a' * 189 + '@example.com'
+    @user.email = 'a' * (email_length_max_without_domain + 1) + email_domain
     assert_not @user.valid?
   end
 
@@ -94,6 +104,11 @@ class UserTest < ActiveSupport::TestCase
     check_array_is_valid(invalid_addresses, false)
   end
 
+  test "email addresses should be unique" do
+    duplicate_user = @user.dup
+    @user.save
+    assert_not duplicate_user.valid?
+  end
   # other methods
 
   private
