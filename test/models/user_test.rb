@@ -16,17 +16,17 @@ class UserTest < ActiveSupport::TestCase
     assert @user.valid?
   end
 
-  test 'empty name should NOT' do
+  test "name shouldn't be empty" do
     @user.name = ''
     assert_not @user.valid?
   end
 
-  test 'name with white spaces should NOT' do
+  test "name shouldn't have only white spaces" do
     @user.name = '   '
     assert_not @user.valid?
   end
 
-  test 'name with only numbers / special characters should NOT' do
+  test "name shouldn't have only numbers" do
     @user.name = '123'
     assert_not @user.valid?
   end
@@ -52,7 +52,7 @@ class UserTest < ActiveSupport::TestCase
     assert @user.valid?
   end
 
-  test 'empty email should NOT' do
+  test 'email should not be empty' do
     @user.email = ''
     assert_not @user.valid?
   end
@@ -72,7 +72,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  def test_validation_email_length_max
+  test 'maximum length email' do
     email_domain = '@a.aa'
     email_length_max_without_domain = @email_max_length - email_domain.length
     # TODO: better name for variable
@@ -82,30 +82,32 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  def test_validation_email_has_at
+  test 'emails should have @' do
     valid_addresses = %w[user@example.com USER@foo.COM A_US-ER@foo.bar.org
                          first.last@foo.jp alice+bob@baz.cn]
     check_array_is_valid(valid_addresses, true)
   end
 
-  def test_validation_email_doesnt_have_at
+  test "emails shouldn't work without @" do
     invalid_addresses = %w[user USERfoo A_US-ERfoo.bar
                            first.last alice+bob]
     check_array_is_valid(invalid_addresses, false)
   end
 
-  def text_validation_email_double_dot
+  test 'emails should not have ".."' do
     @user.email = 'mihai@g..com'
     assert_not @user.valid?
   end
 
-  def test_validation_email_blank_spaces
+  test 'emails should not have white spaces' do
     invalid_addresses = ['mihai 123 blanks@mail.com', 'mihai123blanks@ma il.com']
     check_array_is_valid(invalid_addresses, false)
   end
 
-  test "email addresses should be unique" do
+  test 'email addresses should be unique' do
+    @user.email = 'mihai@mail.com'
     duplicate_user = @user.dup
+    duplicate_user.email = @user.email.upcase
     @user.save
     assert_not duplicate_user.valid?
   end
