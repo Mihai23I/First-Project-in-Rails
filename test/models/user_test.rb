@@ -2,11 +2,15 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   def setup
-    @user = User.new(name: 'Mihai', email: 'mihai@mail.com')
+    @user = User.new(name: 'Mihai',
+                     email: 'mihai@mail.com',
+                     password: 'foobar',
+                     password_confirmation: 'foobar')
     @name_length_max = 50
     @name_length_min = 3
     @email_max_length = 200
     @email_min_length = 8
+    @password_min_length = 6
   end
 
   # Tests for User.name validation
@@ -22,7 +26,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "name shouldn't have only white spaces" do
-    @user.name = '   '
+    @user.name = '          '
     assert_not @user.valid?
   end
 
@@ -58,7 +62,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'only white spaces email should NOT' do
-    @user.email = '    '
+    @user.email = '           '
     assert_not @user.valid?
   end
 
@@ -111,7 +115,27 @@ class UserTest < ActiveSupport::TestCase
     @user.save
     assert_not duplicate_user.valid?
   end
-  # other methods
+
+  test 'email addresses should be saved as lower-case' do
+    mixed_case_email = 'Foo@ExAMPle.CoM'
+    @user.email = mixed_case_email
+    @user.save
+    assert_equal mixed_case_email.downcase, @user.reload.email
+  end
+
+  test 'password should not be blank' do
+    @user.password = @user.password_confirmation = ' ' * @password_min_length
+    assert_not @user.valid?
+    @user.password = @user.password_confirmation = ' ' * @password_min_length + 'a'
+    assert @user.valid?
+  end
+
+  test 'password minnumum length' do
+    @user.password = @user.password_confirmation = 'a' * @password_min_length
+    assert @user.valid?
+    @user.password = @user.password_confirmation = 'a' * (@password_min_length - 1)
+    assert_not @user.valid?
+  end
 
   private
 
