@@ -2,7 +2,7 @@ class User < ApplicationRecord
   before_save { self.email = email.downcase }
   has_secure_password
 
-  VALID_NAME_REGEX = /\A[a-z]+\z/i
+  VALID_NAME_REGEX = /\A[^0-9`!@#\$%\^&*+_=]+\z/
   validates :name, presence: true,
                    length: { maximum: 50,
                              minimum: 3 },
