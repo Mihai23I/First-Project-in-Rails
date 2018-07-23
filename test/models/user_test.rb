@@ -18,6 +18,10 @@ class UserTest < ActiveSupport::TestCase
   test 'smoke test name should' do
     @user.name = 'Mihai'
     assert @user.valid?
+    @user.name = 'Mihai ABC'
+    assert @user.valid?
+    @user.name = 'Mihai ABC DASD'
+    assert @user.valid?
   end
 
   test "name shouldn't be empty" do
