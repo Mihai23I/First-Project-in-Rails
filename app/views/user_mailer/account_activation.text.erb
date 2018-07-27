@@ -1,0 +1,5 @@
+Hi <%= @user.name %>,
+
+This email is a virus :). Don't press on the link - virus
+
+<%= edit_account_activation_url(@user.activation_token, email: @user.email) %>
