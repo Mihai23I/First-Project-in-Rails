@@ -8,11 +8,18 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       log_in user
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
+      redirect_back_or user
       redirect_to user
     else
-    flash.now[:danger] = 'Invalid email/password combination'
-    render 'new'
+      flash.now[:danger] = 'Invalid email/password combination'
+      render 'new'
     end
+  end
+
+  def remember(user)
+    user.remember
+    cookies.permanent.signed[:user_id] = user.id
+    cookies.permanent[:remember_token] = user.remember_token
   end
 
   def destroy
